@@ -170,11 +170,7 @@ The trained model is registered in the **Hopsworks Model Registry** to enable **
   - ROC-AUC
 - **Input example**: first row of the training dataset
 
-The full model directory (including weights and metadata) is uploaded to the registry
-
-This completes the end-to-end pipeline from  
-**external data ingestion → feature store → model training → model registry**,  
-following standard **MLOps best practices**.
+The full model directory (including weights and metadata) is uploaded to the registry.
 
 
 
