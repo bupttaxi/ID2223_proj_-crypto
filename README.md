@@ -77,3 +77,32 @@ All training pipelines read data **only through the Feature View**, not directly
 
 ---
 
+## Automated Data Updates with GitHub Actions
+
+To keep the Feature Group continuously updated, we use **GitHub Actions** to run an **incremental ingestion pipeline** on a schedule.
+
+### Incremental Ingestion Strategy
+
+Instead of reloading all historical data, each scheduled run:
+
+1. Fetches a **recent sliding window** of BTC market data from CoinGecko (default: last 5 days)
+2. Recomputes all engineered features and lagged features
+3. Drops the most recent **24 hours**, since the label `label_up_24h` cannot yet be computed
+4. Reads the **latest timestamp already stored** in the Feature Group
+5. Inserts **only new, non-overlapping rows** into the Feature Group
+
+This design ensures:
+- rolling and lagged features are computed correctly
+- duplicate inserts are avoided
+- the pipeline is idempotent and safe to run repeatedly
+
+### GitHub Actions Integration
+
+The incremental pipeline is triggered via **GitHub Actions**, allowing the feature store to stay synchronized with live market data without manual intervention.
+
+Sensitive credentials (e.g., Hopsworks API key) are stored securely using **GitHub Secrets**, following best practices.
+
+This setup demonstrates a realistic **production-style MLOps workflow**, where external data, feature engineering, and storage are fully automated.
+
+---
+
