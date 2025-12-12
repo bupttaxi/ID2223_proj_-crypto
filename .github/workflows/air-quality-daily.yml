@@ -1,0 +1,37 @@
+name: crypto-daily
+
+on:
+  workflow_dispatch:
+  schedule:
+    # 每天 00:00 UTC 跑一次
+    - cron: '0 0 * * *'
+
+jobs:
+  schedule_crypto_pipeline:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+      pages: write
+
+    steps:
+      - name: checkout repo content
+        uses: actions/checkout@v4
+
+      - name: setup python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+          cache: 'pip'
+
+      - name: install python packages
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: run crypto feature pipeline
+        env:
+          HOPSWORKS_API_KEY: ${{ secrets.HOPSWORKS_API_KEY }}
+        run: |
+          cd pyfiles
+          python crypto_feature_pipeline.py
