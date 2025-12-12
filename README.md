@@ -101,3 +101,25 @@ This setup demonstrates a realistic **production-style MLOps workflow**, where e
 
 ---
 
+## Model Training and Evaluation
+
+### Time-Aware Train / Test Split
+
+Model training data is loaded **exclusively from the Hopsworks Feature View** (`crypto_featureview`), ensuring consistency between feature engineering and model training.
+
+To prevent **temporal leakage**, we perform a **manual time-series split** instead of using a random split:
+
+1. All feature and label data are retrieved from the Feature View
+2. Data is **sorted by timestamp**
+3. The first **80% of samples** are used for training
+4. The remaining **20% of samples** are used for testing
+
+This guarantees that:
+- training data strictly precedes test data in time
+- the model never sees future information during training
+- evaluation reflects a realistic forecasting scenario
+
+```text
+Train: earliest timestamp → 80% time cutoff
+Test : 80% time cutoff → latest available timestamp
+
