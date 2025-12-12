@@ -126,15 +126,6 @@ We use an **XGBoost binary classifier** to predict the **24-hour price direction
 - **Input**: engineered numeric features only
 - **Tree method**: `hist` (efficient for medium-sized tabular datasets)
 
-### Why XGBoost?
-
-XGBoost is well-suited for this task because:
-
-- it handles **non-linear feature interactions**
-- it is robust to **feature scaling**
-- it performs well on **structured tabular data**
-- it provides **feature importance scores** for interpretability
-
 ### Evaluation Metrics
 
 The model is evaluated using:
@@ -179,11 +170,7 @@ The trained model is registered in the **Hopsworks Model Registry** to enable **
   - ROC-AUC
 - **Input example**: first row of the training dataset
 
-The full model directory (including weights and metadata) is uploaded to the registry, enabling:
-
-- reproducible model reloading
-- comparison across model versions
-- clean separation between training and serving
+The full model directory (including weights and metadata) is uploaded to the registry
 
 This completes the end-to-end pipeline from  
 **external data ingestion → feature store → model training → model registry**,  
