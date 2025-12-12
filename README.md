@@ -107,6 +107,83 @@ This setup demonstrates a realistic **production-style MLOps workflow**, where e
 
 Model training data is loaded **exclusively from the Hopsworks Feature View** (`crypto_featureview`), ensuring consistency between feature engineering and model training.
 
+
+
+## Model Choice: XGBoost Classifier
+
+We use an **XGBoost binary classifier** to predict the **24-hour price direction of Bitcoin**.
+
+### Model Configuration
+
+- **Objective**: binary classification (`binary:logistic`)
+- **Target label**: `label_up_24h`
+- **Input**: engineered numeric features only
+- **Tree method**: `hist` (efficient for medium-sized tabular datasets)
+
+### Why XGBoost?
+
+XGBoost is well-suited for this task because:
+
+- it handles **non-linear feature interactions**
+- it is robust to **feature scaling**
+- it performs well on **structured tabular data**
+- it provides **feature importance scores** for interpretability
+
+### Evaluation Metrics
+
+The model is evaluated using:
+
+- **Accuracy**
+- **ROC-AUC**
+- **Classification report**
+- **Confusion matrix**
+- **Predicted probability vs. actual label plots**
+
+---
+
+## Model Artifacts and Visualization
+
+After training, the pipeline automatically:
+
+- saves the trained XGBoost model as `model.json`
+- generates diagnostic plots:
+  - predicted probability vs. actual labels
+  - confusion matrix
+  - feature importance (gain-based)
+
+All artifacts are stored locally in dedicated directories:
+
+- `crypto_model/`
+- `images_crypto/`
+
+---
+
+## Model Registration (Hopsworks Model Registry)
+
+The trained model is registered in the **Hopsworks Model Registry** to enable **versioning**, **reproducibility**, and **future deployment**.
+
+### Registered Model Details
+
+- **Model name**: `crypto_xgboost_direction_model`
+- **Model type**: Python model (XGBoost)
+- **Input schema**: inferred from training features
+- **Output schema**: binary label (`label_up_24h`)
+- **Metrics**:
+  - accuracy
+  - ROC-AUC
+- **Input example**: first row of the training dataset
+
+The full model directory (including weights and metadata) is uploaded to the registry, enabling:
+
+- reproducible model reloading
+- comparison across model versions
+- clean separation between training and serving
+
+This completes the end-to-end pipeline from  
+**external data ingestion → feature store → model training → model registry**,  
+following standard **MLOps best practices**.
+
+
 To prevent **temporal leakage**, we perform a **manual time-series split** instead of using a random split:
 
 1. All feature and label data are retrieved from the Feature View
