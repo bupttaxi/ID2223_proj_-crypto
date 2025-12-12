@@ -38,7 +38,7 @@ The prediction target is a **binary classification label**:
 ```text
 label_up_24h = 1  if price(t + 24h) > price(t)
 label_up_24h = 0  otherwise
-
+```
 ---
 
 ## Feature Store Setup (Hopsworks)
