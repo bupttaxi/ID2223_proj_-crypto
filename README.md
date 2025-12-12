@@ -108,6 +108,12 @@ This setup demonstrates a realistic **production-style MLOps workflow**, where e
 Model training data is loaded **exclusively from the Hopsworks Feature View** (`crypto_featureview`), ensuring consistency between feature engineering and model training.
 
 
+To prevent **temporal leakage**, we perform a **manual time-series split** instead of using a random split:
+
+1. All feature and label data are retrieved from the Feature View
+2. Data is **sorted by timestamp**
+3. The first **80% of samples** are used for training
+4. The remaining **20% of samples** are used for testing
 
 ## Model Choice: XGBoost Classifier
 
@@ -184,11 +190,5 @@ This completes the end-to-end pipeline from
 following standard **MLOps best practices**.
 
 
-To prevent **temporal leakage**, we perform a **manual time-series split** instead of using a random split:
-
-1. All feature and label data are retrieved from the Feature View
-2. Data is **sorted by timestamp**
-3. The first **80% of samples** are used for training
-4. The remaining **20% of samples** are used for testing
 
 
