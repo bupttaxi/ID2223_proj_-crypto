@@ -60,8 +60,6 @@ We create a **Feature Group** in Hopsworks to store all engineered features and 
 
 The Feature Group is initially populated using a **backfill pipeline** that loads approximately 90 days of historical hourly data.
 
----
-
 ### Feature View (FV)
 
 On top of the Feature Group, we create a **Feature View** to define the exact dataset used for model training.
