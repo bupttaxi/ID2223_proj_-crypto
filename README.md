@@ -1,6 +1,6 @@
 # Crypto Price Direction Prediction (BTC)
 
-This project builds an end-to-end **machine learning pipeline** for predicting the **24-hour price direction of Bitcoin (BTC)** using **dynamic external market data**.  
+This project builds an end-to-end **machine learning pipeline** for **_PREDICTING_ the 24-hour price direction of Bitcoin (BTC)** using **dynamic external market data**.  
 It demonstrates data ingestion, feature engineering, time-aware labeling, incremental updates, and MLOps practices using **Hopsworks** and **GitHub Actions**.
 
 ---
