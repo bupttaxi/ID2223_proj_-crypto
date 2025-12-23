@@ -97,8 +97,6 @@ The incremental pipeline is triggered via **GitHub Actions**, allowing the featu
 
 Sensitive credentials (e.g., Hopsworks API key) are stored securely using **GitHub Secrets**, following best practices.
 
-This setup demonstrates a realistic **production-style MLOps workflow**, where external data, feature engineering, and storage are fully automated.
-
 ---
 
 ## Model Training and Evaluation
