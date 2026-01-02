@@ -186,29 +186,30 @@ def save_inference_images(
     hours: np.ndarray,
     acc: float,
     auc: float,
+    eval_date_str: str,   # 👈 新增：YYYY-MM-DD（UTC）
 ):
     """
-    Save inference visualization images:
+    Save inference visualization images with evaluation date annotated:
       - confusion_matrix.png
       - prob_vs_truth.png
 
-    Images are overwritten every run (for GitHub Pages).
+    Images are overwritten every run, but date is embedded in the figure.
     """
     images_dir.mkdir(parents=True, exist_ok=True)
 
     # =========================================================
-    # 1) Confusion Matrix (Pretty / Paper-quality)
+    # 1) Confusion Matrix (Pretty + Date)
     # =========================================================
     from sklearn.metrics import confusion_matrix
 
     cm = confusion_matrix(y_true, y_pred)
 
-    plt.figure(figsize=(5, 4))
+    plt.figure(figsize=(5.4, 4.6))
     sns.heatmap(
         cm,
         annot=True,
         fmt="d",
-        cmap="Blues",          # 论文 / dashboard 常用配色
+        cmap="YlGnBu",
         cbar=False,
         linewidths=0.6,
         linecolor="white",
@@ -219,21 +220,25 @@ def save_inference_images(
     plt.yticks([0.5, 1.5], ["Down / 0", "Up / 1"], rotation=0)
     plt.xlabel("Predicted", fontsize=12)
     plt.ylabel("Actual", fontsize=12)
-    plt.title("Confusion Matrix – BTC 1h Up/Down", fontsize=13)
+
+    plt.title(
+        f"Confusion Matrix – BTC 1h Up/Down\nEvaluation date: {eval_date_str} (UTC)",
+        fontsize=12
+    )
 
     plt.tight_layout()
     plt.savefig(images_dir / "confusion_matrix.png", dpi=200)
     plt.close()
 
     # =========================================================
-    # 2) Hourly Prediction vs Ground Truth
+    # 2) Hourly Prediction vs Ground Truth (with Date)
     # =========================================================
     order = np.argsort(hours)
     h = hours[order]
     yt = y_true[order]
     yp = y_proba[order]
 
-    plt.figure(figsize=(9, 4))
+    plt.figure(figsize=(9.6, 4.6))
     plt.plot(
         h, yp,
         linewidth=2,
@@ -251,9 +256,13 @@ def save_inference_images(
     plt.xticks(range(0, 24))
     plt.xlabel("Hour (UTC)")
     plt.ylabel("Probability / Label")
+
     plt.title(
-        f"Hourly Prediction vs Truth  (Acc={acc:.3f}, AUC={auc if not np.isnan(auc) else float('nan'):.3f})"
+        f"Hourly Prediction vs Truth – {eval_date_str} (UTC)\n"
+        f"Accuracy={acc:.3f}, AUC={auc if not np.isnan(auc) else float('nan'):.3f}",
+        fontsize=12
     )
+
     plt.legend()
     plt.grid(alpha=0.3)
 
@@ -353,6 +362,7 @@ def evaluate_and_save(model: XGBClassifier, df_eval: pd.DataFrame, target_date_s
         hours=hours,
         acc=acc,
         auc=auc,
+        eval_date_str=target_date_str,
     )
 
     print(f"Saved images to: {images_dir}")
