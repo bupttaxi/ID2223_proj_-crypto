@@ -36,3 +36,14 @@ jobs:
           cd pyfiles
           python crypto_feature_pipeline.py
           python crypto_inference.py
+
+      - name: commit inference outputs
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          git add daily_inference_reports/images/confusion_matrix.png daily_inference_reports/images/prob_vs_truth.png
+          git add daily_inference_reports/metrics.json daily_inference_reports/*/predictions.csv 2>/dev/null || true
+
+          git commit -m "Update daily inference images" || echo "No changes to commit"
+          git push
