@@ -188,16 +188,10 @@ def save_inference_images(
     auc: float,
     eval_date_str: str,
 ):
-    """
-    Save inference visualization images with evaluation date annotated:
-      - confusion_matrix.png
-      - prob_vs_truth.png
-      - labels_vs_prediction.png  <-- 新增
-    """
     images_dir.mkdir(parents=True, exist_ok=True)
 
     # =========================================================
-    # 1) Confusion Matrix (unchanged)
+    # 1) Confusion Matrix
     # =========================================================
     from sklearn.metrics import confusion_matrix
 
@@ -214,17 +208,14 @@ def save_inference_images(
         linecolor="white",
         annot_kws={"size": 14, "weight": "bold"},
     )
-
     plt.xticks([0.5, 1.5], ["Down / 0", "Up / 1"])
     plt.yticks([0.5, 1.5], ["Down / 0", "Up / 1"], rotation=0)
     plt.xlabel("Predicted", fontsize=12)
     plt.ylabel("Actual", fontsize=12)
-
     plt.title(
         f"Confusion Matrix – BTC 1h Up/Down\nEvaluation date: {eval_date_str} (UTC)",
         fontsize=12
     )
-
     plt.tight_layout()
     plt.savefig(images_dir / "confusion_matrix.png", dpi=200)
     plt.close()
@@ -240,42 +231,45 @@ def save_inference_images(
     plt.figure(figsize=(9.6, 4.6))
     plt.plot(h, yp, linewidth=2, color="#1f77b4", label="Predicted P(up)")
     plt.plot(h, yt, linewidth=2, color="#d62728", label="True label (0/1)")
-
     plt.ylim(-0.05, 1.05)
     plt.xticks(range(0, 24))
     plt.xlabel("Hour (UTC)")
     plt.ylabel("Probability / Label")
-
     plt.title(
         f"Hourly Prediction vs Truth – {eval_date_str} (UTC)\n"
         f"Accuracy={acc:.3f}, AUC={auc if not np.isnan(auc) else float('nan'):.3f}",
         fontsize=12
     )
-
     plt.legend()
     plt.grid(alpha=0.3)
-
     plt.tight_layout()
     plt.savefig(images_dir / "prob_vs_truth.png", dpi=200)
     plt.close()
 
     # =========================================================
-    # 3) Labels vs Prediction (new)
+    # 3) Hourly True vs Predicted Labels as Table
     # =========================================================
-    plt.figure(figsize=(10, 4.6))
-    width = 0.35  # 柱宽
-    x = np.arange(len(h))
+    import pandas as pd
 
-    plt.bar(x - width/2, y_true[order], width, label="True label", color="#d62728", alpha=0.7)
-    plt.bar(x + width/2, y_pred[order], width, label="Predicted label", color="#1f77b4", alpha=0.7)
+    table_df = pd.DataFrame({
+        "Hour (UTC)": h,
+        "True Label": yt,
+        "Predicted Label": y_pred[order],
+    })
 
-    plt.xticks(x, h)
-    plt.xlabel("Hour (UTC)")
-    plt.ylabel("Label (0=Down,1=Up)")
-    plt.title(f"Hourly True vs Predicted Labels – {eval_date_str} (UTC)")
-    plt.legend()
-    plt.grid(alpha=0.2, axis="y")
-
+    fig, ax = plt.subplots(figsize=(6, len(table_df)*0.5 + 1))
+    ax.axis("tight")
+    ax.axis("off")
+    the_table = ax.table(
+        cellText=table_df.values,
+        colLabels=table_df.columns,
+        cellLoc="center",
+        loc="center",
+    )
+    the_table.auto_set_font_size(False)
+    the_table.set_fontsize(12)
+    the_table.scale(1, 1.2)  # 调整表格行高
+    plt.title(f"Hourly True vs Predicted Labels – {eval_date_str} (UTC)", fontsize=12)
     plt.tight_layout()
     plt.savefig(images_dir / "labels_vs_prediction.png", dpi=200)
     plt.close()
