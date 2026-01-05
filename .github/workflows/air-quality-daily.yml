@@ -3,8 +3,8 @@ name: crypto-daily
 on:
   workflow_dispatch:
   schedule:
-    # 每天 00:00 UTC 跑一次
-    - cron: "0 0 * * *"
+    # 每天 22:00 UTC 跑一次
+    - cron: "0 22 * * *"
 
 jobs:
   schedule_crypto_pipeline:
