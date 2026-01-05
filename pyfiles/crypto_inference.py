@@ -247,28 +247,34 @@ def save_inference_images(
     plt.close()
 
     # =========================================================
-    # 3) Hourly True vs Predicted Labels as Table
+    # 3) Hourly True vs Predicted Labels as Horizontal Table
     # =========================================================
     import pandas as pd
 
+    # 横向表格
     table_df = pd.DataFrame({
-        "Hour (UTC)": h,
-        "True Label": yt,
-        "Predicted Label": y_pred[order],
-    })
+        "True": yt,
+        "Predicted": y_pred[order],
+    }, index=h)  # index = hour
 
-    fig, ax = plt.subplots(figsize=(6, len(table_df)*0.5 + 1))
+    # 转置，使列为小时
+    table_df = table_df.T
+
+    fig, ax = plt.subplots(figsize=(12, 2 + len(table_df)*0.4))
     ax.axis("tight")
     ax.axis("off")
+
     the_table = ax.table(
         cellText=table_df.values,
-        colLabels=table_df.columns,
+        rowLabels=table_df.index,
+        colLabels=[str(hour) for hour in table_df.columns],
         cellLoc="center",
         loc="center",
     )
     the_table.auto_set_font_size(False)
     the_table.set_fontsize(12)
-    the_table.scale(1, 1.2)  # 调整表格行高
+    the_table.scale(1, 1.5)  # 调整行高
+
     plt.title(f"Hourly True vs Predicted Labels – {eval_date_str} (UTC)", fontsize=12)
     plt.tight_layout()
     plt.savefig(images_dir / "labels_vs_prediction.png", dpi=200)

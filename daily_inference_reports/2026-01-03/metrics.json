@@ -25,6 +25,6 @@
     22,
     23
   ],
-  "generated_at_utc": "2026-01-05T17:28:40.291231+00:00",
+  "generated_at_utc": "2026-01-05T17:35:33.892411+00:00",
   "truth_definition": "y_true[h] = 1 if price(D+1,h) > price(D,h) else 0"
 }
