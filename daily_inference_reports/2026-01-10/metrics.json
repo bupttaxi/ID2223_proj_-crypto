@@ -1,0 +1,22 @@
+{
+  "model_name": "crypto_xgboost_direction_model",
+  "model_version": 7,
+  "target_utc_date": "2026-01-10",
+  "rows": 24,
+  "accuracy": 0.6666666666666666,
+  "roc_auc": 0.746031746031746,
+  "confusion_matrix": [
+    [
+      3,
+      0
+    ],
+    [
+      8,
+      13
+    ]
+  ],
+  "missing_hours_day_D": [],
+  "missing_hours_day_D_plus_1": [],
+  "generated_at_utc": "2026-01-13T11:39:43.949324+00:00",
+  "truth_definition": "y_true[h] = 1 if price(D+1,h) > price(D,h) else 0"
+}

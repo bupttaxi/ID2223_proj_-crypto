@@ -382,11 +382,15 @@ def evaluate_and_save(model: XGBClassifier, df_eval: pd.DataFrame, target_date_s
 # ---------- Main ----------
 
 def main():
-    now_utc = datetime.now(timezone.utc)
-    target_day = now_utc.date() - timedelta(days=TARGET_OFFSET_DAYS)  # D
-    next_day = target_day + timedelta(days=1)                        # D+1
+    # now_utc = datetime.now(timezone.utc)
+    # target_day = now_utc.date() - timedelta(days=TARGET_OFFSET_DAYS)  # D
+    # next_day = target_day + timedelta(days=1)                        # D+1
+    # ===== Manually fixed evaluation date (UTC) =====
+    target_day = datetime(2026, 1, 10, tzinfo=timezone.utc).date()  # D = 2026-01-10
+    next_day = target_day + timedelta(days=1)                      # D+1 = 2026-01-11
 
-    print(f"Now UTC             : {now_utc.isoformat()}")
+
+    #print(f"Now UTC             : {now_utc.isoformat()}")
     print(f"Evaluating day D     : {target_day} (00:00–23:00 UTC)")
     print(f"Using next day D+1   : {next_day} (00:00–23:00 UTC) to build truth labels")
 
